@@ -25,7 +25,7 @@ export default function Ui({ img, description, category, title ,id}) {
           style={[
             tw`self-start px-2 py-0.5 rounded-full`,
             { backgroundColor: bgColor },
-          ]}git 
+          ]}
         >
           <Text style={{ color: text, fontSize: 14, fontWeight: '500' }}>
             {category}
