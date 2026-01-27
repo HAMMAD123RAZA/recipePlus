@@ -11,11 +11,9 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-
         tabBarStyle: {
           backgroundColor: text,
         },
-
         tabBarActiveTintColor: '#CC561E',
         tabBarInactiveTintColor: '#666',
       }}
@@ -41,11 +39,21 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="posts"
+        options={{
+          title: 'Community',
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="people" size={28} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="save"
         options={{
           title: 'Save',
           tabBarIcon: ({ color }) => (
-            <Ionicons name="save" size={28} color={color} />
+            <Ionicons name="bookmark" size={28} color={color} />
           ),
         }}
       />

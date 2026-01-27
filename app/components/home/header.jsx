@@ -1,11 +1,13 @@
 import { text, bgColor } from '@/constants/theme';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../utils/AuthContext';
+import { useRouter } from 'expo-router';
 import tw from 'twrnc';
 
 export default function Header() {
-  const { user, loginAnonymously, logout } = useAuth();
+  const { user, userData, loginAnonymously, logout } = useAuth();
+  const router = useRouter();
 
   return (
     <View style={tw`mt-4 mb-2 p-4 flex-row justify-between items-center`}>
@@ -18,19 +20,36 @@ export default function Header() {
         </Text>
       </View>
       
-      <TouchableOpacity 
-        onPress={user ? logout : loginAnonymously}
-        style={[tw`p-3 rounded-2xl`, { backgroundColor: 'rgba(255,255,255,0.15)' }]}
-      >
-        <Ionicons 
-          name={user ? "log-out-outline" : "person-outline"} 
-          size={24} 
-          color={text} 
-        />
+      <View style={tw`flex-row`}>
         {user && (
-          <View style={[tw`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-[${bgColor}]`, { backgroundColor: '#4ADE80' }]} />
+          <TouchableOpacity 
+            onPress={() => {
+              if (userData?.role === 'admin') {
+                router.push('/admin/manage');
+              } else {
+                Alert.alert("Access Denied", "Only super users can access the admin panel.");
+              }
+            }}
+            style={[tw`p-3 rounded-2xl mr-2`, { backgroundColor: 'rgba(255,255,255,0.15)' }]}
+          >
+            <Ionicons name="settings-outline" size={24} color={text} />
+          </TouchableOpacity>
         )}
-      </TouchableOpacity>
+        
+        <TouchableOpacity 
+          onPress={user ? logout : loginAnonymously}
+          style={[tw`p-3 rounded-2xl`, { backgroundColor: 'rgba(255,255,255,0.15)' }]}
+        >
+          <Ionicons 
+            name={user ? "log-out-outline" : "person-outline"} 
+            size={24} 
+            color={text} 
+          />
+          {user && (
+            <View style={[tw`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-[${bgColor}]`, { backgroundColor: '#4ADE80' }]} />
+          )}
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
