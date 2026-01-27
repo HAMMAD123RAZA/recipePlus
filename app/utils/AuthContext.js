@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, signInAnonymously, signOut } from 'firebase/auth';
+import { 
+  onAuthStateChanged, 
+  signInAnonymously, 
+  signOut, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword 
+} from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 
@@ -14,7 +20,6 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
-        // Fetch additional user data (like role) from Firestore
         try {
           const userDocRef = doc(db, 'users', firebaseUser.uid);
           const userDoc = await getDoc(userDocRef);
@@ -22,11 +27,10 @@ export const AuthProvider = ({ children }) => {
           if (userDoc.exists()) {
             setUserData(userDoc.data());
           } else {
-            // Create a default user profile if it doesn't exist
             const defaultData = {
               uid: firebaseUser.uid,
               email: firebaseUser.email || 'anonymous',
-              role: 'user', // Default role
+              role: 'user',
               createdAt: new Date().toISOString()
             };
             await setDoc(userDocRef, defaultData);
@@ -45,13 +49,39 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
+  const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
+  
+  const register = async (email, password) => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const newUser = userCredential.user;
+    const userDocRef = doc(db, 'users', newUser.uid);
+    const defaultData = {
+      uid: newUser.uid,
+      email: email,
+      role: 'user',
+      createdAt: new Date().toISOString()
+    };
+    await setDoc(userDocRef, defaultData);
+    setUserData(defaultData);
+    return userCredential;
+  };
+
   const loginAnonymously = () => signInAnonymously(auth);
   const logout = () => signOut(auth);
 
   const isAdmin = userData?.role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ user, userData, loading, loginAnonymously, logout, isAdmin }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      userData, 
+      loading, 
+      login, 
+      register, 
+      loginAnonymously, 
+      logout, 
+      isAdmin 
+    }}>
       {children}
     </AuthContext.Provider>
   );

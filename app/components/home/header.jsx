@@ -37,7 +37,13 @@ export default function Header() {
         )}
         
         <TouchableOpacity 
-          onPress={user ? logout : loginAnonymously}
+          onPress={() => {
+            if (user) {
+              logout();
+            } else {
+              router.push('/auth/login');
+            }
+          }}
           style={[tw`p-3 rounded-2xl`, { backgroundColor: 'rgba(255,255,255,0.15)' }]}
         >
           <Ionicons 

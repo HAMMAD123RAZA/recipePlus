@@ -27,10 +27,12 @@ import { db } from '../utils/firebase';
 import { useAuth } from '../utils/AuthContext';
 import { text, bgColor } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import tw from 'twrnc';
 
 const Posts = () => {
   const { user, userData } = useAuth();
+  const router = useRouter();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -53,7 +55,17 @@ const Posts = () => {
 
   const handleCreatePost = async () => {
     if (!user) {
-      Alert.alert("Login Required", "Please sign in to share a post.");
+      Alert.alert(
+        "Login Required", 
+        "Please sign in to share a post.",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Login", onPress: () => {
+            setModalVisible(false);
+            router.push('/auth/login');
+          }}
+        ]
+      );
       return;
     }
     if (!newPost.trim()) return;
@@ -79,7 +91,14 @@ const Posts = () => {
 
   const handleLike = async (postId, likes) => {
     if (!user) {
-      Alert.alert("Login Required", "Please sign in to like posts.");
+      Alert.alert(
+        "Login Required", 
+        "Please sign in to like posts.",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Login", onPress: () => router.push('/auth/login') }
+        ]
+      );
       return;
     }
 

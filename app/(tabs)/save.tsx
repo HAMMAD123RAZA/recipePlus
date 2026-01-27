@@ -12,11 +12,13 @@ import { db } from '../utils/firebase';
 import { useAuth } from '../utils/AuthContext';
 import { text, bgColor } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import tw from 'twrnc';
 import Ui from '../components/cards/Ui.jsx';
 
 const Save = () => {
-  const { user, loginAnonymously } = useAuth();
+  const { user } = useAuth();
+  const router = useRouter();
   const [savedRecipes, setSavedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,10 +69,10 @@ const Save = () => {
           Create an account to keep track of your favorite recipes across devices.
         </Text>
         <TouchableOpacity 
-          onPress={loginAnonymously}
+          onPress={() => router.push('/auth/login')}
           style={[tw`px-8 py-4 rounded-2xl`, { backgroundColor: text }]}
         >
-          <Text style={[tw`text-lg font-bold`, { color: bgColor }]}>Get Started</Text>
+          <Text style={[tw`text-lg font-bold`, { color: bgColor }]}>Sign In / Sign Up</Text>
         </TouchableOpacity>
       </View>
     );
