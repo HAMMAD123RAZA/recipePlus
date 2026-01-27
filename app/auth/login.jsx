@@ -15,12 +15,13 @@ import { useRouter, Link } from 'expo-router';
 import { text, bgColor } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import tw from 'twrnc';
+import { Image } from 'expo-image';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+const { login, loginWithGoogle } = useAuth();
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -105,6 +106,22 @@ const Login = () => {
             </TouchableOpacity>
           </Link>
         </View>
+              <TouchableOpacity
+  onPress={loginWithGoogle}
+  style={[
+    tw`px-8 py-4 rounded-full flex-row items-center justify-center gap-3 mt-6`,
+    { backgroundColor: text }
+  ]}
+>
+  <Image
+    source={{ uri: 'https://1000logos.net/wp-content/uploads/2016/11/New-Google-Logo.jpg' }}
+    style={{ width: 24, height: 24 }}
+  />
+  <Text style={{ color: bgColor, fontWeight: 'bold' }}>
+    Continue with Google
+  </Text>
+</TouchableOpacity>
+
       </ScrollView>
     </KeyboardAvoidingView>
   );

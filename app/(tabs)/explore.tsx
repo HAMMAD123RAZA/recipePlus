@@ -103,12 +103,12 @@ const Explore = () => {
 
       {/* Search Bar */}
       <View style={tw`px-6 mb-6`}>
-        <View style={[tw`flex-row items-center px-4 py-3 rounded-2xl`, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
-          <Ionicons name="search" size={20} color={text} style={tw`mr-3`} />
+        <View style={[tw`flex-row items-center px-4 py-3 rounded-2xl`, { backgroundColor: text }]}>
+          <Ionicons name="search" size={20} color={bgColor} style={tw`mr-3`} />
           <TextInput
             placeholder="Search recipes, ingredients..."
             placeholderTextColor="rgba(255,255,255,0.5)"
-            style={[tw`flex-1 text-base`, { color: text }]}
+            style={[tw`flex-1 text-base`, { color: bgColor }]}
             value={searchQuery}
             onChangeText={handleSearch}
           />

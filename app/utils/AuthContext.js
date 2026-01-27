@@ -1,13 +1,19 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { 
-  onAuthStateChanged, 
-  signInAnonymously, 
-  signOut, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword 
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInAnonymously,
+  signInWithCredential,
+  signInWithEmailAndPassword,
+  signOut
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth, db } from './firebase';
+
+WebBrowser.maybeCompleteAuthSession();
 
 const AuthContext = createContext();
 
@@ -15,6 +21,24 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+const [request, response, promptAsync] = Google.useAuthRequest({
+  expoClientId: '1036653037148-vl6610nisp1kghbe26fsaafvj01obe5k.apps.googleusercontent.com',
+  webClientId: '1036653037148-vl6610nisp1kghbe26fsaafvj01obe5k.apps.googleusercontent.com',
+  androidClientId: '1036653037148-vl6610nisp1kghbe26fsaafvj01obe5k.apps.googleusercontent.com',
+});
+
+
+useEffect(() => {
+  if (response?.type === 'success') {
+    const idToken = response.authentication?.idToken;
+
+    if (!idToken) return;
+
+    const credential = GoogleAuthProvider.credential(idToken);
+    signInWithCredential(auth, credential);
+  }
+}, [response]);
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -50,7 +74,8 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
-  
+  const loginWithGoogle = () => promptAsync();
+
   const register = async (email, password) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const newUser = userCredential.user;
@@ -73,14 +98,15 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ 
-      user, 
-      userData, 
-      loading, 
-      login, 
-      register, 
-      loginAnonymously, 
-      logout, 
-      isAdmin 
+    user,
+  userData,
+  loading,
+  login,
+  register,
+  loginAnonymously,
+  loginWithGoogle,
+  logout,
+  isAdmin
     }}>
       {children}
     </AuthContext.Provider>

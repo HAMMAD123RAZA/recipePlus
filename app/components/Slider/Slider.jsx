@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import tw from 'twrnc';
 
 const { width } = Dimensions.get('window');
-
 const SLIDER_DATA = [
   {
     id: '1',
@@ -30,6 +29,22 @@ const SLIDER_DATA = [
     image:
       'https://images.unsplash.com/photo-1543353071-873f17a7a088',
   },
+  {
+    id: '4',
+    title: 'Step-by-Step Recipes',
+    description:
+      'Follow easy, guided instructions to cook perfect meals every time.',
+    image:
+      'https://images.unsplash.com/photo-1512621776951-a57141f2eefd',
+  },
+  {
+    id: '5',
+    title: 'Fresh Ideas Daily',
+    description:
+      'Get inspired with new recipes and meal ideas tailored for you.',
+    image:
+      'https://images.unsplash.com/photo-1506084868230-bb9d95c24759',
+  },
 ];
 
 export default function AppSlider() {
@@ -45,7 +60,7 @@ export default function AppSlider() {
         index: next,
         animated: true,
       });
-    }, 3000);
+    }, 1000);
 
     return () => clearInterval(timer);
   }, [index]);
